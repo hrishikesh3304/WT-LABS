@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Online Book Store</title>
+</head>
+<body>
+  <h1>Online Book Store</h1>
+
+  <h3>Add Book</h3>
+  <input id="bookName" placeholder="Name" />
+  <input id="bookAuthor" placeholder="Author" />
+  <input id="bookPrice" type="number" placeholder="Price" />
+  <button onclick="addBook()">Add Book</button>
+
+  <h2>Book List</h2>
+  <div id="bookList"></div>
+
+  <h2>Cart</h2>
+  <button onclick="viewCart()">View Cart</button>
+  <div id="cartContainer"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    const apiUrl = 'http://localhost:3000';
+    const USER_ID = 'demo_user';
+
+    function addBook() {
+      const name = document.getElementById('bookName').value;
+      const author = document.getElementById('bookAuthor').value;
+      const price = document.getElementById('bookPrice').value;
+
+      axios.post(`${apiUrl}/add_book`, { name, author, price })
+        .then(() => {
+          alert('Book added');
+          loadBooks();
+        })
+        .catch(err => console.error(err));
+    }
+
+    function addToCart(bookId) {
+      axios.post(`${apiUrl}/cart/add`, {
+        user_id: USER_ID,
+        book_id: bookId,
+        quantity: 1
+      })
+      .then(() => alert('Book added to cart'))
+      .catch(err => console.error(err));
+    }
+
+    function loadBooks() {
+      axios.get(`${apiUrl}/books`)
+        .then(res => {
+          const bookList = document.getElementById('bookList');
+          bookList.innerHTML = '';
+          res.data.forEach(book => {
+            const div = document.createElement('div');
+            div.innerHTML = `
+              <strong>${book.name}</strong> by ${book.author} - $${book.price}
+              <button onclick="addToCart(${book.id})">Add to Cart</button>
+              <hr>
+            `;
+            bookList.appendChild(div);
+          });
+        })
+        .catch(err => console.error(err));
+    }
+
+    function viewCart() {
+      axios.get(`${apiUrl}/cart/${USER_ID}`)
+        .then(res => {
+          const cart = res.data;
+          const cartContainer = document.getElementById('cartContainer');
+          cartContainer.innerHTML = '';
+          cart.forEach(item => {
+            cartContainer.innerHTML += `
+              <p>${item.book_name} x ${item.quantity} - $${(item.book_price * item.quantity).toFixed(2)}</p>
+            `;
+          });
+        })
+        .catch(err => console.error(err));
+    }
+
+    // Initial load
+    loadBooks();
+  </script>
+</body>
+</html>
