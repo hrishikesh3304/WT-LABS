@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Electricity Bill Calculator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="p-4">
+<div class="container">
+    <h2>Electricity Bill Calculator</h2>
+    <form id="billForm">
+        <div class="mb-3">
+            <label for="name" class="form-label">Consumer Name</label>
+            <input type="text" id="name" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label for="units" class="form-label">Units Consumed</label>
+            <input type="number" id="units" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Generate Bill</button>
+    </form>
+    <div id="result" class="mt-4 alert alert-info" style="display:none;"></div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script>
+    $("#billForm").submit(function(event) {
+        event.preventDefault();
+        $.ajax({
+            url: "http://localhost:8080/api/generate-bill",
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({
+                name: $("#name").val(),
+                units: parseInt($("#units").val())
+            }),
+            success: function(response) {
+                $("#result").html("Bill generated for " + response.consumer.name + ": Rs. " + response.amount.toFixed(2)).show();
+            },
+            error: function(err) {
+                $("#result").html("Error generating bill").addClass("alert-danger").show();
+            }
+        });
+    });
+</script>
+</body>
+</html>

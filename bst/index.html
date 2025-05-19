@@ -1,0 +1,90 @@
+<!-- BST Section -->
+<div style="margin-top: 40px;">
+  <h3>Binary Search Tree (BST)</h3>
+
+  <!-- Insert Node -->
+  <div style="margin-top: 20px;">
+    Insert Number:
+    <input type="number" id="bst-insert" />
+    <button class="btn btn-primary" onclick="insertBST()">Insert</button>
+  </div>
+
+  <!-- Search Node -->
+  <br>
+  <div>
+    Search Number:
+    <input type="number" id="bst-search" />
+    <button class="btn btn-info" onclick="searchBST()">Search</button>
+  </div>
+
+  <!-- BST Display -->
+  <div style="margin-top: 20px;">
+    <h4>BST (In-order Traversal)</h4>
+    <pre id="bst-display" style="background-color: #f5f5f5; padding: 10px; border: 1px solid #ccc;"></pre>
+  </div>
+
+  <!-- Search Result -->
+  <div style="margin-top: 20px;">
+    <h4>Search Result</h4>
+    <pre id="bst-result" style="background-color: #f5f5f5; padding: 10px; border: 1px solid #ccc;"></pre>
+  </div>
+</div>
+
+<script>
+  // BST Node class
+  class Node {
+    constructor(data) {
+      this.data = data;
+      this.left = null;
+      this.right = null;
+    }
+  }
+
+  let bstRoot = null;
+
+  function insertNode(root, data) {
+    if (root === null) return new Node(data);
+    if (data < root.data) {
+      root.left = insertNode(root.left, data);
+    } else if (data > root.data) {
+      root.right = insertNode(root.right, data);
+    }
+    return root;
+  }
+
+  function insertBST() {
+    let value = parseInt(document.getElementById("bst-insert").value);
+    if (isNaN(value)) return;
+    bstRoot = insertNode(bstRoot, value);
+    displayBST();
+  }
+
+  function inorderTraversal(node, result) {
+    if (node !== null) {
+      inorderTraversal(node.left, result);
+      result.push(node.data);
+      inorderTraversal(node.right, result);
+    }
+  }
+
+  function displayBST() {
+    let result = [];
+    inorderTraversal(bstRoot, result);
+    document.getElementById("bst-display").textContent = "In-order: " + result.join(" -> ");
+  }
+
+  function searchBSTNode(node, target) {
+    if (node === null) return false;
+    if (node.data === target) return true;
+    if (target < node.data) return searchBSTNode(node.left, target);
+    else return searchBSTNode(node.right, target);
+  }
+
+  function searchBST() {
+    let value = parseInt(document.getElementById("bst-search").value);
+    if (isNaN(value)) return;
+    let found = searchBSTNode(bstRoot, value);
+    document.getElementById("bst-result").textContent =
+      found ? "Found " + value + " in BST" : value + " not found in BST";
+  }
+</script>

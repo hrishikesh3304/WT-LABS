@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Electricity Billing System</title>
+</head>
+<body>
+  <h1>Electricity Billing System</h1>
+
+  <h3>Generate Bill</h3>
+  <input id="consumerId" placeholder="Consumer ID" />
+  <input id="units" type="number" placeholder="Units Consumed" />
+  <button onclick="generateBill()">Generate Bill</button>
+  <button onclick="viewBills()">View Bills</button>
+
+  <h2>All Bills</h2>
+  <div id="billList"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    const apiUrl = 'http://localhost:3000';
+
+    function generateBill() {
+      const id = document.getElementById('consumerId').value;
+      const units = parseFloat(document.getElementById('units').value);
+
+      if (!id || isNaN(units)) {
+        alert("Please enter valid Consumer ID and Units.");
+        return;
+      }
+
+      axios.post(`${apiUrl}/generate_bill`, { id, units })
+        .then(() => {
+          alert('Bill generated');
+          viewBills();
+        })
+        .catch(err => console.error(err));
+    }
+
+    function viewBills() {
+      const id = document.getElementById('consumerId').value;
+
+      if (!id) {
+        alert("Please enter a Consumer ID to view bills.");
+        return;
+      }
+
+      axios.get(`${apiUrl}/bills/${id}`)
+        .then(res => {
+          const bills = res.data;
+          const billList = document.getElementById('billList');
+          billList.innerHTML = '';
+          bills.forEach(bill => {
+            billList.innerHTML += `<p>Date: ${bill.date} - Bill: ₹${bill.bill}</p>`;
+          });
+        })
+        .catch(err => console.error(err));
+    }
+  </script>
+</body>
+</html>

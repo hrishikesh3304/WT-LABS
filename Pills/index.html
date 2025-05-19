@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Course Projects and EDI Projects</title>
+  <link
+    rel="stylesheet"
+    href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+  />
+</head>
+
+
+
+
+
+<body>
+  <div class="container">
+    <ul class="nav nav-pills">
+      <li class="active"><a data-toggle="pill" href="#home">Course Projects</a></li>
+
+      <li><a data-toggle="pill" href="#edi">EDI Projects</a></li>
+    </ul>
+
+    <div class="tab-content" style="margin-top: 30px;">
+      <!-- Course Projects Tab -->
+      <div id="home" class="tab-pane fade in active">
+        <h3>Course Projects</h3>
+        Enter course project name:
+        <input type="text" id="cp-name" />
+        Enter description:
+        <input type="text" id="cp-desc" />
+        <button class="btn btn-primary" onclick="saveCP()">Submit</button>
+        <button class="btn btn-default" onclick="listCP()">Refresh</button>
+
+        <p id="cp-output"></p>
+      </div>
+
+      <!-- EDI Projects Tab -->
+      <div id="edi" class="tab-pane fade">
+        <h3>EDI Projects</h3>
+        Enter EDI project name:
+        <input type="text" id="edi-name" />
+        Enter description:
+        <input type="text" id="edi-desc" />
+        <button class="btn btn-primary" onclick="saveEDI()">Submit</button>
+        <button class="btn btn-default" onclick="listEDI()">Refresh</button>
+
+        <p id="edi-output"></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function saveCP() {
+      let name = document.getElementById("cp-name").value;
+      let desc = document.getElementById("cp-desc").value;
+      localStorage.setItem("cp_" + name, desc);
+      alert("Course project saved!");
+    }
+
+    function listCP() {
+      let content = "<ul>";
+      for (let i = 0; i < localStorage.length; i++) {
+        let key = localStorage.key(i);
+        if (key.startsWith("cp_")) {
+          let value = localStorage.getItem(key);
+          content += `<li><strong>${key.slice(3)} :</strong> ${value}</li>`;
+        }
+      }
+      content += "</ul>";
+      document.getElementById("cp-output").innerHTML = content;
+    }
+
+    
+    function saveEDI() {
+      let name = document.getElementById("edi-name").value;
+      let desc = document.getElementById("edi-desc").value;
+      localStorage.setItem("edi_" + name, desc);
+      alert("EDI project saved!");
+    }
+
+    function listEDI() {
+      let content = "<ul>";
+      for (let i = 0; i < localStorage.length; i++) {
+        let key = localStorage.key(i);
+        if (key.startsWith("edi_")) {
+          let value = localStorage.getItem(key);
+          content += `<li><strong>${key.slice(4)} :</strong> ${value}</li>`;
+        }
+      }
+      content += "</ul>";
+      document.getElementById("edi-output").innerHTML = content;
+    }
+
+    
+  </script>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</body>
+</html>
